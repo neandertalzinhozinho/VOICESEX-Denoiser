@@ -6,7 +6,7 @@
 [![Platform](https://img.shields.io/badge/Platform-Windows%20x64%20%7C%20VST3-blue.svg)](https://github.com/neandertalzinhozinho/VOICESEX---Denoiser)
 [![License](https://img.shields.io/badge/License-Open%20Source-green.svg)](https://github.com/neandertalzinhozinho/VOICESEX---Denoiser)
 
-**Engenharia reversa open-source de famoso plugin de audio para remocao de ruido e separacao vocal em tempo real.**
+**Open-source reverse engineering of a popular audio plugin for real-time noise removal and vocal separation.**
 
 <br/>
 
