@@ -54,12 +54,22 @@
 - Windows 10/11 x64
 - Visual Studio 2022 (MSVC C++17)
 - CMake 3.22+
+- [JUCE 8](https://github.com/juce-framework/JUCE) checked out at `native/sexyvox/third_party/JUCE`
+- [ONNX Runtime 1.23.2 for Windows x64](https://github.com/microsoft/onnxruntime/releases) extracted to `native/sexyvox/third_party/onnxruntime-win-x64-1.23.2`
+
+The JUCE and ONNX Runtime directories are intentionally not committed to this
+repository. Download and extract them into the paths above before configuring
+the project. The ONNX model engines used by VOICESEX are already included in
+`native/sexyvox/models/`.
 
 ### Compile
 ```powershell
 # Clone the repository
-git clone https://github.com/neandertalzinhozinho/VOICESEX---Denoiser.git
-cd VOICESEX---Denoiser
+git clone https://github.com/neandertalzinhozinho/VOICESEX-Denoiser.git
+cd VOICESEX-Denoiser
+
+# Download JUCE and ONNX Runtime into native/sexyvox/third_party/
+# (see the prerequisites above)
 
 # Configure CMake
 cmake -B native/sexyvox/out -S native/sexyvox -G "Visual Studio 17 2022" -A x64
