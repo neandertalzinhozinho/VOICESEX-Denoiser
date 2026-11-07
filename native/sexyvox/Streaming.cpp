@@ -166,8 +166,37 @@ struct StreamChannel::Impl {
                 erbFeature.data[step*56+b]=float(10*std::log10(power/widths[b]+1e-10)); edge+=widths[b];
             }
         }
-        auto erbOut=erDec.run(erEnc.run({{"feat_erb",std::move(erbFeature)}}));
-        std::copy_n(erbOut.at("m").data.begin(),56,mask.begin());
+        auto erbEncOut=erEnc.run({{"feat_erb",std::move(erbFeature)}});
+        float lsnr = 0.0f;
+        auto it_lsnr = erbEncOut.find("lsnr");
+        if (it_lsnr != erbEncOut.end() && !it_lsnr->second.data.empty()) {
+            const auto& ld = it_lsnr->second.data;
+            lsnr = ld.size() >= 4 ? ld[3] : ld.back();
+        }
+        auto erbOut=erDec.run(std::move(erbEncOut));
+        const float* m_step3 = erbOut.at("m").data.size() >= 4 * 56
+            ? erbOut.at("m").data.data() + 3 * 56
+            : erbOut.at("m").data.data();
+        std::copy_n(m_step3, 56, mask.begin());
+
+        // 1. DeepFilterNet Native Post-Filter (beta = 0.03)
+        // Suppresses residual whistling and musical noise in low-confidence bands (m=1.0 -> pf=1.0)
+        constexpr float beta = 0.03f;
+        for (int b = 0; b < 56; ++b) {
+            float mb = std::clamp(mask[b], 1e-6f, 1.0f);
+            float sin_term = std::sin(float(M_PI) * mb * 0.5f);
+            float pf = (1.0f + beta) / (1.0f + beta / (sin_term * sin_term + 1e-12f));
+            mask[b] *= std::clamp(pf, 0.0f, 1.0f);
+        }
+
+        // 2. LSNR Speech Presence Soft-Gate
+        // Below -10 dB: pure noise detected, smooth suppression
+        // Above +5 dB: speech presence, 100% transparent
+        float g_raw = std::clamp((lsnr - (-10.0f)) / (5.0f - (-10.0f)), 0.0f, 1.0f);
+        float gate = g_raw * g_raw * (3.0f - 2.0f * g_raw);
+        for (int b = 0; b < 56; ++b) {
+            mask[b] *= gate;
+        }
         std::copy(input.begin()+512,input.end(),input.begin());
         std::copy_n(x,512,input.begin()+512);
         std::array<float,2048> buf{};
@@ -214,6 +243,11 @@ struct StreamChannel::Impl {
                 v = v_df * (1.0f - blend * (1.0f - m));
             } else {
                 v = spectra[5][f] * mask_ramp[f];
+            }
+            if (f == 0) {
+                v = 0.0f;
+            } else if (f == 1) {
+                v *= (0.05f + 0.95f * gate);
             }
             out_buf[2*f]=v.real()*1024; out_buf[2*f+1]=v.imag()*1024;
         }

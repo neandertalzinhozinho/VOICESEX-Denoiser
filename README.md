@@ -2,7 +2,7 @@
 
 # VOICESEX — Real-time AI Vocal Denoiser & Separator
 
-[![Release](https://img.shields.io/badge/Release-v1.0.0-gold.svg)](https://github.com/neandertalzinhozinho/VOICESEX---Denoiser)
+[![Release](https://img.shields.io/badge/Release-v1.0.1-gold.svg)](https://github.com/neandertalzinhozinho/VOICESEX---Denoiser)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20x64%20%7C%20VST3-blue.svg)](https://github.com/neandertalzinhozinho/VOICESEX---Denoiser)
 [![License](https://img.shields.io/badge/License-Open%20Source-green.svg)](https://github.com/neandertalzinhozinho/VOICESEX---Denoiser)
 
@@ -67,6 +67,24 @@ cmake -B native/sexyvox/out -S native/sexyvox -G "Visual Studio 17 2022" -A x64
 # Build Release
 cmake --build native/sexyvox/out --config Release --target VOICESEX_VST3
 ```
+
+### Included audio engines
+
+The four ONNX inference engines required by the plugin are versioned in
+`native/sexyvox/models/` and are embedded into the VST3 at build time:
+
+- `df_enc.onnx` — Deep Filtering encoder
+- `df_dec.onnx` — Deep Filtering decoder
+- `erb_enc.onnx` — ERB encoder
+- `erb_dec.onnx` — ERB decoder
+
+The repository also includes `native/sexyvox/prepare_models.py`, which documents
+how the persistent-context models are derived from the research originals in
+`models/`. SHA-256 hashes are kept in `native/sexyvox/models/SHA256SUMS.txt`.
+
+The source code and model files are published here for reproducibility of this
+project. The ONNX weights should be redistributed only under the rights held by
+their original owner.
 
 ---
 

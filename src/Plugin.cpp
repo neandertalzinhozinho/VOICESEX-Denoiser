@@ -474,7 +474,7 @@ public:
         // Version string
         g.setFont(juce::FontOptions(9.5f));
         g.setColour(juce::Colour(0xff8a8d94));
-        g.drawText("v1.0.0", 0, 104, getWidth(), 18, juce::Justification::centred);
+        g.drawText("v1.0.1", 0, 104, getWidth(), 18, juce::Justification::centred);
     }
 
     void mouseMove(const juce::MouseEvent& e) override {
@@ -494,7 +494,7 @@ public:
             juce::AlertWindow::showMessageBoxAsync(
                 juce::AlertWindow::InfoIcon,
                 "About VOICESEX",
-                "VOICESEX v1.0.0 by NDERTAL LABS\n\nThanks for using!\nFor more visit:\nhttps://github.com/neandertalzinhozinho\n\nReport any issues at:\nhttps://github.com/neandertalzinhozinho/VOICESEX---Denoiser"
+                "VOICESEX v1.0.1 by NDERTAL LABS\n\nThanks for using!\nFor more visit:\nhttps://github.com/neandertalzinhozinho\n\nReport any issues at:\nhttps://github.com/neandertalzinhozinho\n\nReport any issues at:\nhttps://github.com/neandertalzinhozinho/VOICESEX---Denoiser"
             );
             if (onDismiss) onDismiss();
         }
